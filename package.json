@@ -1,0 +1,17 @@
+{
+  "name": "saas",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+  },
+  "keywords": [],
+  "author": "Dazum Dev <dazum.dev@gmail.com>",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.4.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module"
+}
