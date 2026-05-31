@@ -11,8 +11,9 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "start": "node dist/index.mjs",
     "type:check": "tsc --noEmit",
+    "type:check:staged": "node scripts/type-check-staged.js",
+    "start": "node dist/index.mjs",
     "prepare": "husky"
   },
   "author": "Dazum Dev <dazum.dev@gmail.com>",

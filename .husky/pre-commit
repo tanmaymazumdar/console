@@ -6,8 +6,14 @@ if [ -n "$files" ]; then
   echo "$files" | tr '\n' '\0' | xargs -0 pnpm run fmt --no-error-on-unmatched-pattern || exit 1
 
   echo "Linting staged files..."
-  echo "$files" | tr '\n' '\0' | xargs -0 pnpm run lint --no-error-on-unmatched-pattern || exit 1
+  echo "$files" | tr '\n' '\0' | xargs -0 pnpm run lint:fix --no-error-on-unmatched-pattern || exit 1
 
   # Re-stage formatted and linted files
   echo "$files" | tr '\n' '\0' | xargs -0 git add
 fi
+
+# Run type check on the staged files only
+echo "Type checking staged files..."
+pnpm run type:check:staged || exit 1
+
+rm -rf tsconfig.temp.json
