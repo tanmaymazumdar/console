@@ -12,12 +12,18 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "start": "node dist/index.mjs",
+    "type:check": "tsc --noEmit",
     "prepare": "husky"
   },
   "author": "Dazum Dev <dazum.dev@gmail.com>",
   "dependencies": {
+    "@fastify/caching": "^9.0.3",
     "@fastify/one-line-logger": "^2.1.0",
-    "fastify": "^5.8.5"
+    "abstract-cache": "^1.0.1",
+    "abstract-cache-redis": "^2.0.0",
+    "fastify": "^5.8.5",
+    "fastify-plugin": "^5.1.0",
+    "ioredis": "^5.11.0"
   },
   "devDependencies": {
     "@types/node": "^24.12.4",

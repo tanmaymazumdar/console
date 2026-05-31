@@ -1,5 +1,10 @@
 import Fastify from 'fastify'
 
+import type { FastifyRequest, FastifyReply } from 'fastify'
+
+// import v1Routes from './controllers/v1/index.js'
+import cachingPlugin from './plugins/caching.js'
+
 const fastify = Fastify({
   logger: {
     transport: {
@@ -9,15 +14,18 @@ const fastify = Fastify({
   disableRequestLogging: true
 })
 
-fastify.addHook('onResponse', (request, reply, done) => {
+fastify.addHook('onResponse', (request: FastifyRequest, reply: FastifyReply, done: (err?: Error) => void) => {
   const loggerFormat = `${request.url} - ${reply.statusCode} - ${reply.elapsedTime.toFixed(2)}ms`
-
   fastify.log.info(loggerFormat)
   done()
 })
 
-fastify.get('/', async (_req, res) => {
-  res.code(200).send({ name: 'SaaS' })
+// 1. Register Caching Plugin (Global Hooks & Connection manager)
+await fastify.register(cachingPlugin)
+
+// 3. Simple root check route
+fastify.get('/', async (_req: FastifyRequest, res: FastifyReply) => {
+  return res.code(200).send({ status: 'ok', service: 'SaaS API' })
 })
 
 try {
