@@ -3,15 +3,37 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "build": "pnpm run clean && pnpm run build:server",
+    "build:server": "tsdown -c scripts/tsdown.config.ts",
+    "clean": "rm -rf dist",
+    "dev": "tsx --watch src/index.ts",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "start": "node dist/index.mjs",
+    "prepare": "husky"
   },
-  "keywords": [],
   "author": "Dazum Dev <dazum.dev@gmail.com>",
+  "dependencies": {
+    "@fastify/one-line-logger": "^2.1.0",
+    "fastify": "^5.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.4",
+    "husky": "^9.1.7",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
+    "rolldown": "^1.0.2",
+    "tsdown": "^0.22.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
       "version": "^11.4.0",
       "onFail": "download"
     }
-  },
-  "type": "module"
+  }
 }

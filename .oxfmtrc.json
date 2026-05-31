@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "avoid",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "ignorePatterns": ["node_modules", "package.json", "pnpm-lock.yaml"],
+  "jsxSingleQuote": true,
+  "semi": false,
+  "singleQuote": true,
+  "sortImports": {
+    "groups": ["builtin", "subpath", "external", ["internal", "type"], ["parent", "index", "sibling"], "style"]
+  },
+  "sortTailwindcss": true,
+  "sortPackageJson": false,
+  "printWidth": 120,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "useTabs": false
+}

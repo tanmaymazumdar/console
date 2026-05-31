@@ -1,0 +1,13 @@
+# Get staged files matching JS/TS/JSON extensions
+files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.([mc]?[jt]sx?|jsonc?)$')
+
+if [ -n "$files" ]; then
+  echo "Formatting staged files..."
+  echo "$files" | tr '\n' '\0' | xargs -0 pnpm run fmt --no-error-on-unmatched-pattern || exit 1
+
+  echo "Linting staged files..."
+  echo "$files" | tr '\n' '\0' | xargs -0 pnpm run lint --no-error-on-unmatched-pattern || exit 1
+
+  # Re-stage formatted and linted files
+  echo "$files" | tr '\n' '\0' | xargs -0 git add
+fi

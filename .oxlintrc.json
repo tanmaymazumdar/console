@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "import", "jest", "node", "oxc", "react", "react-perf", "typescript", "unicorn", "vitest"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": ["dist/**", "coverage/**", "node_modules/**", "vendor/**", "test/snapshots/**"],
+  "options": {
+    "typeCheck": false,
+    "typeAware": false
+  },
+  "rules": {
+    "typescript/array-type": "error",
+    "typescript/explicit-function-return-type": "error",
+    "typescript/no-explicit-any": "error"
+  },
+  "env": {
+    "builtin": true
+  }
+}
