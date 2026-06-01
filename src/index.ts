@@ -1,8 +1,11 @@
+import { join } from 'node:path'
+
 import fastifyCompress from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import fastifyFormbody from '@fastify/formbody'
 import fastifyHelmet from '@fastify/helmet'
+import fastifyStatic from '@fastify/static'
 import Fastify from 'fastify'
 
 import type { FastifyRequest, FastifyReply } from 'fastify'
@@ -11,6 +14,8 @@ import { config } from './server/config.js'
 import { logger } from './server/hooks/logger.js'
 import cachingPlugin from './server/plugins/caching.js'
 import { corsConfig } from './server/plugins/cors.js'
+
+const isProd = process.env.NODE_ENV === 'production'
 
 const fastify = Fastify(config)
 
@@ -35,6 +40,22 @@ await fastify.register(cachingPlugin)
 
 // 6. Register Compression Plugin (Global Hooks & Threshold configuration)
 await fastify.register(fastifyCompress, { threshold: 1024 })
+
+if (isProd) {
+  // 7. Register Static Plugin
+  fastify.register(fastifyStatic, {
+    root: join(import.meta.dirname, 'client'), // import.meta.dirname node.js >= v20.11.0
+    // By default all assets are immutable and can be cached for a long period due to cache bursting techniques
+    maxAge: '1y',
+    immutable: true
+  })
+
+  // Explicitly reduce caching of assets that don't use cache bursting techniques
+  fastify.get('/', async (_req: FastifyRequest, res: FastifyReply) => {
+    // index.html should never be cached
+    return res.sendFile('index.html', { maxAge: 0, immutable: false })
+  })
+}
 
 // 7. Simple root check route
 fastify.get('/api/v1/health', async (_req: FastifyRequest, res: FastifyReply) => {

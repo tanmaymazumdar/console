@@ -43,7 +43,7 @@ try {
   // 3. Create temp tsconfig
   const tempConfigPath = path.resolve('tsconfig.temp.json')
   const tempConfig = {
-    extends: './tsconfig.json',
+    extends: './tsconfig.app.json',
     files: [...stagedFiles, ...dtsFiles]
   }
 
