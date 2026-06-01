@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm run clean && pnpm run type:check && pnpm run build:server && pnpm run build:client",
-    "build:client": "NODE_ENV=production vite build",
+    "build:client": "NODE_ENV=production vite build && mkdir -p dist/client && mv src/dist/* dist/client/ && rm -rf src/dist",
     "build:server": "NODE_ENV=production tsdown -c scripts/tsdown.config.ts",
     "clean": "rm -rf dist",
     "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:client\"",
