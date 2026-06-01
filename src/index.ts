@@ -1,8 +1,8 @@
+import fastifyCompress from '@fastify/compress'
 import Fastify from 'fastify'
 
 import type { FastifyRequest, FastifyReply } from 'fastify'
 
-// import v1Routes from './controllers/v1/index.js'
 import cachingPlugin from './plugins/caching.js'
 
 const fastify = Fastify({
@@ -23,7 +23,12 @@ fastify.addHook('onResponse', (request: FastifyRequest, reply: FastifyReply, don
 // 1. Register Caching Plugin (Global Hooks & Connection manager)
 await fastify.register(cachingPlugin)
 
-// 3. Simple root check route
+// 2. Register Compression Plugin (Global Hooks & Threshold configuration)
+await fastify.register(fastifyCompress, {
+  threshold: 1024
+})
+
+// 4. Simple root check route
 fastify.get('/', async (_req: FastifyRequest, res: FastifyReply) => {
   return res.code(200).send({ status: 'ok', service: 'SaaS API' })
 })
