@@ -9,6 +9,7 @@ This document describes the design, implementation, request lifecycle flow, and 
 The response compression system is built to minimize bandwidth consumption and speed up page and data delivery for our SaaS backend:
 
 ### A. Automatic Payload Compression
+
 - **Goal:** Dynamically compress outgoing payloads that exceed a specific size threshold before they are sent to the client.
 - **Size Threshold:** Configured at **1024 bytes (1KB)** to prevent the overhead of compressing very small payloads (which could inadvertently increase the packet size).
 - **Supported Encodings:** Automatically negotiates and uses the most efficient algorithm requested by the client's `Accept-Encoding` header:
@@ -18,6 +19,7 @@ The response compression system is built to minimize bandwidth consumption and s
   4. `identity` - Zero compression.
 
 ### B. Route-Based Customization
+
 - **Goal:** Grant developers granular control to override global compression settings per endpoint.
 - **Disable Compression:** Setting `compress: false` disables compression completely (useful for large files that are already compressed, e.g. zip/images, to avoid redundant CPU usage).
 - **Custom threshold / options:** Configure individual thresholds or custom compressors inline inside route options.
@@ -78,7 +80,7 @@ The compression changes are cleanly integrated across the codebase:
 - **`src/index.ts`:** Entrypoint registers the plugin globally with the 1KB threshold:
   ```typescript
   await fastify.register(fastifyCompress, {
-    threshold: 1024,
+    threshold: 1024
   })
   ```
 
@@ -95,11 +97,13 @@ The compression changes are cleanly integrated across the codebase:
 ## 6. When to Use & When Not to Use Compression
 
 ### When to Use
+
 - **Large JSON REST API responses:** E.g., paginated `/v1/products` or `/v1/users/list` responses.
 - **Static Assets:** E.g., text, HTML pages, JS bundles, and large custom SVGs.
 - **Dynamic HTML/Text rendering endpoints.**
 
 ### When NOT to Use
+
 - **Binary formats that are already compressed:** E.g., JPEG, PNG, ZIP, MP4, PDF files. Bypassing compression for these via `compress: false` saves valuable CPU cycles.
 - **Small payloads (< 1KB):** Automatically bypassed via our configured `threshold: 1024` limit.
 
@@ -110,7 +114,9 @@ The compression changes are cleanly integrated across the codebase:
 Enabling or disabling compression on specific routes is straightforward:
 
 ### A. Default Dynamic Compression (Automatic)
+
 Responses exceeding 1024 bytes are automatically compressed:
+
 ```typescript
 fastify.get('/large-data', async (request, reply) => {
   return reply.code(200).send({ data: 'A'.repeat(2000) })
@@ -118,24 +124,36 @@ fastify.get('/large-data', async (request, reply) => {
 ```
 
 ### B. Explicitly Disabling Compression
+
 Useful for already compressed static assets or media files to conserve server CPU:
+
 ```typescript
-fastify.get('/download-zip', {
-  compress: false
-}, async (request, reply) => {
-  const zipBuffer = getZipFileBuffer()
-  return reply.code(200).type('application/zip').send(zipBuffer)
-})
+fastify.get(
+  '/download-zip',
+  {
+    compress: false
+  },
+  async (request, reply) => {
+    const zipBuffer = getZipFileBuffer()
+    return reply.code(200).type('application/zip').send(zipBuffer)
+  }
+)
 ```
 
 ### C. Custom Compression Settings per Route
+
 Customize threshold or algorithms for special routes:
+
 ```typescript
-fastify.get('/custom-route', {
-  compress: {
-    threshold: 512, // Compress if response is larger than 512 bytes
+fastify.get(
+  '/custom-route',
+  {
+    compress: {
+      threshold: 512 // Compress if response is larger than 512 bytes
+    }
+  },
+  async (request, reply) => {
+    return reply.code(200).send({ msg: 'Custom compressed route' })
   }
-}, async (request, reply) => {
-  return reply.code(200).send({ msg: 'Custom compressed route' })
-})
+)
 ```

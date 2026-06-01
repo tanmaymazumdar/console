@@ -1,4 +1,5 @@
 import fastifyCompress from '@fastify/compress'
+import fastifyCookie from '@fastify/cookie'
 import Fastify from 'fastify'
 
 import type { FastifyRequest, FastifyReply } from 'fastify'
@@ -20,10 +21,17 @@ fastify.addHook('onResponse', (request: FastifyRequest, reply: FastifyReply, don
   done()
 })
 
-// 1. Register Caching Plugin (Global Hooks & Connection manager)
+const cookieSecret = process.env.COOKIE_SECRET || 'default_super_secure_cookie_signature_secret_key_32_chars'
+
+// 1. Register Cookie Plugin (Must be registered first for onRequest cookie parsing)
+await fastify.register(fastifyCookie, {
+  secret: cookieSecret
+})
+
+// 2. Register Caching Plugin (Global Hooks & Connection manager)
 await fastify.register(cachingPlugin)
 
-// 2. Register Compression Plugin (Global Hooks & Threshold configuration)
+// 3. Register Compression Plugin (Global Hooks & Threshold configuration)
 await fastify.register(fastifyCompress, {
   threshold: 1024
 })
