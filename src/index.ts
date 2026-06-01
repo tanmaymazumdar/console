@@ -1,6 +1,7 @@
 import fastifyCompress from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
+import fastifyFormbody from '@fastify/formbody'
 import Fastify from 'fastify'
 
 import type { FastifyRequest, FastifyReply } from 'fastify'
@@ -22,11 +23,9 @@ fastify.addHook('onResponse', (request: FastifyRequest, reply: FastifyReply, don
   done()
 })
 
-const cookieSecret = process.env.COOKIE_SECRET || 'default_super_secure_cookie_signature_secret_key_32_chars'
-
 // 1. Register Cookie Plugin (Must be registered first for onRequest cookie parsing)
 await fastify.register(fastifyCookie, {
-  secret: cookieSecret
+  secret: process.env.COOKIE_SECRET || 'default_super_secure_cookie_signature_secret_key_32_chars'
 })
 
 // 2. Register CORS Plugin (Must be registered early to handle OPTIONS preflights)
@@ -62,24 +61,24 @@ await fastify.register(fastifyCors, {
   credentials: true
 })
 
-// 3. Register Caching Plugin (Global Hooks & Connection manager)
+// 3. Register Formbody Parser Plugin (Parses application/x-www-form-urlencoded payloads)
+await fastify.register(fastifyFormbody)
+
+// 4. Register Caching Plugin (Global Hooks & Connection manager)
 await fastify.register(cachingPlugin)
 
-// 4. Register Compression Plugin (Global Hooks & Threshold configuration)
+// 5. Register Compression Plugin (Global Hooks & Threshold configuration)
 await fastify.register(fastifyCompress, {
   threshold: 1024
 })
 
-// 5. Simple root check route
+// 6. Simple root check route
 fastify.get('/', async (_req: FastifyRequest, res: FastifyReply) => {
   return res.code(200).send({ status: 'ok', service: 'SaaS API' })
 })
 
 try {
-  await fastify.listen({
-    port: parseInt(process.env.PORT ?? '4000'),
-    host: process.env.HOST ?? '127.0.0.1'
-  })
+  await fastify.listen({ port: 4000, host: '127.0.0.1' })
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)

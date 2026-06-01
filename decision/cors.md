@@ -9,11 +9,13 @@ This document describes the design, security specifications, request lifecycle f
 The CORS middleware is implemented using `@fastify/cors` to secure the backend API against unauthorized cross-origin requests while enabling authentic, authenticated interactions from trusted frontends:
 
 ### A. Environment-Based Whitelist matching
+
 - **Goal:** Allow cross-origin requests originating only from explicitly approved origins configured in the system.
 - **Dynamic Whitelist:** Read from a comma-separated environment variable `process.env.ALLOWED_ORIGINS` (e.g. `https://app.mydomain.com,https://admin.mydomain.com`).
 - **Development Fallback:** In development/local environments, automatically allow any requests originating from `localhost` or `127.0.0.1` (on any port) to ensure seamless local frontend-backend development.
 
 ### B. Authenticated CORS (Signed Cookies Support)
+
 - **Goal:** Enable the safe transmittal of signed session cookies (`@fastify/cookie`) across domains.
 - **Specification Constraints:** Set `credentials: true`. Under standard security policies, this **strictly prohibits** the use of the wildcard `Access-Control-Allow-Origin: *` header. The server must dynamically match and return the specific requesting origin in the response.
 
@@ -64,6 +66,7 @@ graph TD
 The CORS security configuration is integrated inside:
 
 - **`src/index.ts`:** Register the plugin with the dynamic origin resolver:
+
   ```typescript
   await fastify.register(fastifyCors, {
     origin: (origin, callback) => {
@@ -114,13 +117,18 @@ The CORS security configuration is integrated inside:
 ## 6. How to Configure Allowed Origins
 
 ### A. Development Mode (Default)
+
 By default, all localhost addresses are permitted. No environment configuration is needed for local development:
+
 - Allowed: `http://localhost:3000`, `http://localhost:5173`, `http://127.0.0.1:8080`.
 - Blocked: `http://externaldomain.com`.
 
 ### B. Production Mode
+
 Configure `ALLOWED_ORIGINS` in your environment files:
+
 ```env
 ALLOWED_ORIGINS=https://app.yourdomain.com,https://admin.yourdomain.com
 ```
+
 Origins are automatically stripped of spaces and matched case-insensitively.
