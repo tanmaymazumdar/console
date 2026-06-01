@@ -9,10 +9,12 @@ This document describes the design, security specifications, request lifecycle f
 The cookie parser system is built using `@fastify/cookie` to allow safe, client-tamper-proof management of server-side state (like authentication tokens or session IDs):
 
 ### A. Automatic Cookie Parsing
+
 - **Goal:** Parse incoming HTTP `Cookie` headers automatically so they are made available as a structured object on requests.
 - **Hook Integration:** Automatically hooks into Fastify's `onRequest` lifecycle stage so that cookies are parsed before any downstream plugins or handlers run.
 
 ### B. Secure Cookie Signing & Tamper Resistance
+
 - **Goal:** Sign set cookies with a cryptographically secure signature, allowing the server to verify that the client has not tampered with the cookie values.
 - **Secret Key:** Loaded dynamically from `process.env.COOKIE_SECRET` with a secure development fallback.
 - **Algorithm:** Uses standard HMAC-SHA256 signatures to attach signature hashes to cookies.
@@ -69,8 +71,9 @@ The cookie system is cleanly integrated across the codebase:
   - `/set-cookie`: Issues a signed, HttpOnly, SameSite cookie.
   - `/get-cookie`: Reads the cookie, unsigns it, and validates its signature.
 - **`src/index.ts`:** Bootstraps the plugin with a secure secret loading process:
+
   ```typescript
-  const cookieSecret = process.env.COOKIE_SECRET || "default_super_secure_cookie_signature_secret_key_32_chars"
+  const cookieSecret = process.env.COOKIE_SECRET || 'default_super_secure_cookie_signature_secret_key_32_chars'
 
   await fastify.register(fastifyCookie, {
     secret: cookieSecret
@@ -90,7 +93,9 @@ The cookie system is cleanly integrated across the codebase:
 ## 6. Per-Route Configuration & Usage
 
 ### A. Setting a Signed, Secure Cookie
+
 Always pass security parameters (`httpOnly`, `sameSite`, `signed`) when writing a cookie:
+
 ```typescript
 fastify.get('/login', async (request, reply) => {
   return reply
@@ -108,7 +113,9 @@ fastify.get('/login', async (request, reply) => {
 ```
 
 ### B. Reading and Unsigning a Cookie
+
 Never trust `request.cookies` values directly if they are signed; always verify the signature:
+
 ```typescript
 fastify.get('/profile', async (request, reply) => {
   const rawCookie = request.cookies.session_id
@@ -131,12 +138,11 @@ fastify.get('/profile', async (request, reply) => {
 ```
 
 ### C. Clearing a Cookie
+
 Clearing requires passing the same options (`path`, etc.) to match the client's cookie record:
+
 ```typescript
 fastify.get('/logout', async (request, reply) => {
-  return reply
-    .clearCookie('session_id', { path: '/' })
-    .code(200)
-    .send({ message: 'Logged out successfully' })
+  return reply.clearCookie('session_id', { path: '/' }).code(200).send({ message: 'Logged out successfully' })
 })
 ```
