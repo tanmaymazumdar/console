@@ -2,6 +2,7 @@ import fastifyCompress from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import fastifyCors from '@fastify/cors'
 import fastifyFormbody from '@fastify/formbody'
+import fastifyHelmet from '@fastify/helmet'
 import Fastify from 'fastify'
 
 import type { FastifyRequest, FastifyReply } from 'fastify'
@@ -61,18 +62,21 @@ await fastify.register(fastifyCors, {
   credentials: true
 })
 
-// 3. Register Formbody Parser Plugin (Parses application/x-www-form-urlencoded payloads)
+// 3. Register Helmet Security Headers Plugin (Applies standard HTTP security headers globally)
+await fastify.register(fastifyHelmet)
+
+// 4. Register Formbody Parser Plugin (Parses application/x-www-form-urlencoded payloads)
 await fastify.register(fastifyFormbody)
 
-// 4. Register Caching Plugin (Global Hooks & Connection manager)
+// 5. Register Caching Plugin (Global Hooks & Connection manager)
 await fastify.register(cachingPlugin)
 
-// 5. Register Compression Plugin (Global Hooks & Threshold configuration)
+// 6. Register Compression Plugin (Global Hooks & Threshold configuration)
 await fastify.register(fastifyCompress, {
   threshold: 1024
 })
 
-// 6. Simple root check route
+// 7. Simple root check route
 fastify.get('/', async (_req: FastifyRequest, res: FastifyReply) => {
   return res.code(200).send({ status: 'ok', service: 'SaaS API' })
 })
