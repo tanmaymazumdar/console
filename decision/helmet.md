@@ -9,6 +9,7 @@ This document describes the design, implementation, secure headers configuration
 HTTP security headers are configured using `@fastify/helmet` to protect the backend services and users from common web attacks:
 
 ### A. Core Security Headers Applied
+
 By registering `@fastify/helmet` with its standard defaults, the application automatically responds with the following standard HTTP headers:
 
 - **`Content-Security-Policy` (CSP):** Restricts the sources of content (scripts, stylesheets, images, connections, fonts, media) that the browser is allowed to load for a given page, preventing Cross-Site Scripting (XSS) and data injection attacks.
@@ -43,10 +44,10 @@ graph TD
     B --> C[Cookie Parser parses cookies]
     C --> D[CORS Preflight checks]
     D --> E[Helmet injects Secure HTTP Headers]
-    
+
     E --> F[Populates: Content-Security-Policy, nosniff, SAMEORIGIN, HSTS, etc.]
     F --> G[Proceeds to Formbody, Caching, & Routing]
-    
+
     G --> H[Handler executes]
     H --> I[Response returned containing full Security Headers]
 ```
@@ -58,12 +59,14 @@ graph TD
 The Helmet middleware is integrated inside:
 
 - **`src/index.ts`:** Register the plugin globally immediately after CORS:
+
   ```typescript
   import fastifyHelmet from '@fastify/helmet'
 
   // 3. Register Helmet Security Headers Plugin (Applies standard HTTP security headers globally)
   await fastify.register(fastifyHelmet)
   ```
+
 - **`decision/helmet.md`:** This design record.
 
 ---
@@ -79,27 +82,33 @@ The Helmet middleware is integrated inside:
 ## 6. How to Configure Helmet Options
 
 ### A. Standard Global Default (Current Setup)
+
 Simply register the package globally:
+
 ```typescript
 await fastify.register(fastifyHelmet)
 ```
 
 ### B. Customizing Headers (e.g. Custom CSP)
+
 To allow script or image sources from external domains, pass custom parameters inline:
+
 ```typescript
 await fastify.register(fastifyHelmet, {
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://apis.google.com"],
-      imgSrc: ["'self'", "https://images.unsplash.com"]
+      scriptSrc: ["'self'", 'https://apis.google.com'],
+      imgSrc: ["'self'", 'https://images.unsplash.com']
     }
   }
 })
 ```
 
 ### C. Disabling Specific Headers (e.g. Disabling CSP)
+
 To completely bypass Content-Security-Policy while maintaining other headers (useful for specific static templates or SPA routes):
+
 ```typescript
 await fastify.register(fastifyHelmet, {
   contentSecurityPolicy: false
