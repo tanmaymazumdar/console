@@ -47,7 +47,10 @@ if (isProd) {
     root: join(import.meta.dirname, 'client'), // import.meta.dirname node.js >= v20.11.0
     // By default all assets are immutable and can be cached for a long period due to cache bursting techniques
     maxAge: '1y',
-    immutable: true
+    immutable: true,
+    etag: true,
+    preCompressed: true,
+    serveDotFiles: false
   })
 
   // Explicitly reduce caching of assets that don't use cache bursting techniques
