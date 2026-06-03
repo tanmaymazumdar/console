@@ -11,3 +11,6 @@ All notable changes to SaaS will be documented in this file.
 - add formbody middleware
 - add helmet middleware
 - add react + vite setup
+- add sass framework
+- add react router
+- add redux
