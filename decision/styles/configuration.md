@@ -1,6 +1,6 @@
 # Design Tokens & Configuration
 
-This document outlines the token maps and global design variables defined in [src/app/styles/config/_variables.scss](file:///Users/tanmay/Documents/poc/saas/src/app/styles/config/_variables.scss). These variables represent the core visual constants of our design system.
+This document outlines the token maps and global design variables defined in [src/app/styles/config/\_variables.scss](file:///Users/tanmay/Documents/poc/saas/src/app/styles/config/_variables.scss). These variables represent the core visual constants of our design system.
 
 ---
 
@@ -8,16 +8,16 @@ This document outlines the token maps and global design variables defined in [sr
 
 We adopt a mobile-first approach. All breakpoints are declared in **REMs** to ensure responsive queries scale proportionally if the user changes their browser's default font size:
 
-| Breakpoint Key | Value (rem) | Pixel Equivalent (at 16px base) | Target Devices |
-|:--------------:|:-----------:|:------------------------------:|:--------------|
-| `xs`           | `20rem`     | `320px`                        | Small phones  |
-| `sm`           | `40rem`     | `640px`                        | Large phones / Small tablets |
-| `md`           | `48rem`     | `768px`                        | Tablets |
-| `lg`           | `64rem`     | `1024px`                       | Small laptops |
-| `xl`           | `80rem`     | `1280px`                       | Standard desktops |
-| `xxl`          | `96rem`     | `1536px`                       | Large screens |
+| Breakpoint Key | Value (rem) | Pixel Equivalent (at 16px base) | Target Devices               |
+| :------------: | :---------: | :-----------------------------: | :--------------------------- |
+|      `xs`      |   `20rem`   |             `320px`             | Small phones                 |
+|      `sm`      |   `40rem`   |             `640px`             | Large phones / Small tablets |
+|      `md`      |   `48rem`   |             `768px`             | Tablets                      |
+|      `lg`      |   `64rem`   |            `1024px`             | Small laptops                |
+|      `xl`      |   `80rem`   |            `1280px`             | Standard desktops            |
+|     `xxl`      |   `96rem`   |            `1536px`             | Large screens                |
 
-*Variable:* `$breakpoints`
+_Variable:_ `$breakpoints`
 
 ---
 
@@ -29,16 +29,21 @@ Our spacing scale is built on a linear-to-exponential system. Spacing integers a
 - **9 to 20:** Loose layout spacing (steps of `1rem` up to `4rem`, then doubling or tripling up to `160rem`).
 
 ### Spacing Map Snippet
+
 ```scss
 $spacer: 1 !default;
 $spacers: (
-  1: $spacer * 0.25,   // 0.25rem  (4px)
-  2: $spacer * 0.5,    // 0.50rem  (8px)
-  3: $spacer * 0.75,   // 0.75rem  (12px)
-  4: $spacer,          // 1.00rem  (16px)
-  ...
-  11: $spacer * 8,     // 8.00rem  (128px)
-  20: $spacer * 160    // 160.0rem (2560px)
+  1: $spacer * 0.25,
+  // 0.25rem  (4px)
+  2: $spacer * 0.5,
+  // 0.50rem  (8px)
+  3: $spacer * 0.75,
+  // 0.75rem  (12px)
+  4: $spacer,
+  // 1.00rem  (16px)
+  ... 11: $spacer * 8,
+  // 8.00rem  (128px)
+  20: $spacer * 160 // 160.0rem (2560px)
 ) !default;
 ```
 
@@ -49,6 +54,7 @@ $spacers: (
 Our primary typography uses the **Inter** font family, with fallback fonts defined for sans, serif, and monospace formats.
 
 ### Font Sizing Scale
+
 Font sizes scale proportionally from a `1rem` base:
 
 - `$font-size-xs`: `0.75rem` (12px)
@@ -62,6 +68,7 @@ Font sizes scale proportionally from a `1rem` base:
 - `$font-size-5xl`: `3.75rem` (60px)
 
 ### Font Weights
+
 - `Light`: `300`
 - `Normal`: `400`
 - `Medium`: `500`
@@ -103,17 +110,17 @@ Shadow maps represent depth and elevation within the layout, from flat panels to
 
 To prevent conflicts where overlays overlap, we enforce a strict z-index scale:
 
-| Z-Index Variable | Value | Purpose |
-|:-----------------|:-----:|:--------|
-| `$z-index-negative` | `-1` | Sending decorative background graphics backwards |
-| `$z-index-base` | `1` | Default baseline elements |
-| `$z-index-dropdown` | `1000` | Contextual menus |
-| `$z-index-sticky` | `1020` | Sticky navigation headers |
-| `$z-index-fixed` | `1030` | Persistent feedback bars |
-| `$z-index-modal-backdrop` | `1040` | Dimming overlay under active modals |
-| `$z-index-modal` | `1050` | Active dialog popups |
-| `$z-index-popover` | `1060` | Interactive floating bubbles |
-| `$z-index-tooltip` | `1070` | Text helper bubbles |
+| Z-Index Variable          | Value  | Purpose                                          |
+| :------------------------ | :----: | :----------------------------------------------- |
+| `$z-index-negative`       |  `-1`  | Sending decorative background graphics backwards |
+| `$z-index-base`           |  `1`   | Default baseline elements                        |
+| `$z-index-dropdown`       | `1000` | Contextual menus                                 |
+| `$z-index-sticky`         | `1020` | Sticky navigation headers                        |
+| `$z-index-fixed`          | `1030` | Persistent feedback bars                         |
+| `$z-index-modal-backdrop` | `1040` | Dimming overlay under active modals              |
+| `$z-index-modal`          | `1050` | Active dialog popups                             |
+| `$z-index-popover`        | `1060` | Interactive floating bubbles                     |
+| `$z-index-tooltip`        | `1070` | Text helper bubbles                              |
 
 ---
 

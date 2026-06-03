@@ -1,6 +1,6 @@
 # Sass Mixins Reference Guide
 
-This document lists and explains all helper mixins declared in [src/app/styles/config/_mixins.scss](file:///Users/tanmay/Documents/poc/saas/src/app/styles/config/_mixins.scss). These mixins construct layout systems, generate CSS variables, wrap responsive media queries, and handle accessibility utilities.
+This document lists and explains all helper mixins declared in [src/app/styles/config/\_mixins.scss](file:///Users/tanmay/Documents/poc/saas/src/app/styles/config/_mixins.scss). These mixins construct layout systems, generate CSS variables, wrap responsive media queries, and handle accessibility utilities.
 
 ---
 
@@ -9,8 +9,10 @@ This document lists and explains all helper mixins declared in [src/app/styles/c
 These mobile-first media query wrappers automate breakpoint declarations using tokens configured in `$breakpoints`.
 
 ### `media-breakpoint-up($name, $breakpoints)`
+
 Generates a min-width media query. Styles inside are applied at and above the specified screen size.
-* **Usage:**
+
+- **Usage:**
   ```scss
   .container {
     width: 100%;
@@ -21,8 +23,10 @@ Generates a min-width media query. Styles inside are applied at and above the sp
   ```
 
 ### `media-breakpoint-down($name, $breakpoints)`
+
 Generates a max-width media query. Styles inside are applied at and below the specified screen size (subtracting `0.02px` from the boundary to prevent overlaps).
-* **Usage:**
+
+- **Usage:**
   ```scss
   .sidebar {
     display: block;
@@ -33,8 +37,10 @@ Generates a max-width media query. Styles inside are applied at and below the sp
   ```
 
 ### `media-breakpoint-between($lower, $upper, $breakpoints)`
+
 Generates a range-bounded media query applying rules exclusively within a screen range.
-* **Usage:**
+
+- **Usage:**
   ```scss
   .banner {
     font-size: 1rem;
@@ -51,34 +57,57 @@ Generates a range-bounded media query applying rules exclusively within a screen
 These mixins automate class generation for utility maps.
 
 ### `generate-utility($property, $class, $values)`
+
 Programmatically generates utility helper classes for a key-value value map.
-* **Usage:**
+
+- **Usage:**
   ```scss
-  $displays: ('none': none, 'block': block, 'flex': flex);
+  $displays: (
+    'none': none,
+    'block': block,
+    'flex': flex
+  );
   @include generate-utility('display', 'd', $displays);
   ```
-* **Output CSS:**
+- **Output CSS:**
   ```css
-  .d-none { display: none !important; }
-  .d-block { display: block !important; }
-  .d-flex { display: flex !important; }
+  .d-none {
+    display: none !important;
+  }
+  .d-block {
+    display: block !important;
+  }
+  .d-flex {
+    display: flex !important;
+  }
   ```
 
 ### `generate-responsive-utility($property, $class, $values, $breakpoints)`
+
 Generates utility helper classes wrapped in mobile-first media query breakpoints.
-* **Usage:**
+
+- **Usage:**
   ```scss
-  $overflows: ('auto': auto, 'hidden': hidden);
+  $overflows: (
+    'auto': auto,
+    'hidden': hidden
+  );
   @include generate-responsive-utility('overflow', 'overflow', $overflows);
   ```
-* **Output CSS:**
+- **Output CSS:**
   ```css
-  .overflow-auto { overflow: auto !important; }
+  .overflow-auto {
+    overflow: auto !important;
+  }
   @media (min-width: 640px) {
-    .overflow-sm-auto { overflow: auto !important; }
+    .overflow-sm-auto {
+      overflow: auto !important;
+    }
   }
   @media (min-width: 768px) {
-    .overflow-md-auto { overflow: auto !important; }
+    .overflow-md-auto {
+      overflow: auto !important;
+    }
   }
   ```
 
@@ -89,6 +118,7 @@ Generates utility helper classes wrapped in mobile-first media query breakpoints
 These spacing helpers automatically divide pixel input by `16` to generate proportional REM values. This allows developers to work in pixel values while outputting relative REM units in the compiled CSS.
 
 ### Padding Helpers
+
 - `@include padding(16)`: Sets padding of `1rem` on all sides.
 - `@include paddingY(24)`: Sets vertical padding (`padding-top` and `padding-bottom`) of `1.5rem`.
 - `@include paddingX(32)`: Sets horizontal padding of `2rem`.
@@ -96,6 +126,7 @@ These spacing helpers automatically divide pixel input by `16` to generate propo
 - `@include padding4(8, 16, 12, 24)`: Sets top (`0.5rem`), right (`1rem`), bottom (`0.75rem`), and left (`1.5rem`) padding individually.
 
 ### Margin Helpers
+
 - `@include margin(16)`
 - `@include marginY(24)`
 - `@include marginX(32)`
@@ -107,8 +138,10 @@ These spacing helpers automatically divide pixel input by `16` to generate propo
 ## 4. Accessibility (A11y) & UX
 
 ### `sr-only`
+
 Hides an element visually while keeping it accessible to screen readers.
-* **Usage:**
+
+- **Usage:**
   ```html
   <button>
     <span class="sr-only">Close Settings Dialog</span>
@@ -117,8 +150,10 @@ Hides an element visually while keeping it accessible to screen readers.
   ```
 
 ### `focus-outline`
+
 Applies a consistent outline focus state that matches our brand color while preserving appropriate offset spacing.
-* **Usage:**
+
+- **Usage:**
   ```scss
   input:focus-visible {
     @include focus-outline;
@@ -130,8 +165,10 @@ Applies a consistent outline focus state that matches our brand color while pres
 ## 5. Webkit Layout Helpers
 
 ### `aspect-ratio($width, $height)`
+
 Guarantees responsive box scaling based on aspect ratios, using absolute-position children.
-* **Usage:**
+
+- **Usage:**
   ```scss
   .video-container {
     @include aspect-ratio(16, 9);
@@ -139,8 +176,10 @@ Guarantees responsive box scaling based on aspect ratios, using absolute-positio
   ```
 
 ### `truncate`
+
 Clips text to fit a single line and appends an ellipsis.
-* **Usage:**
+
+- **Usage:**
   ```scss
   .card-title {
     @include truncate;
@@ -148,8 +187,10 @@ Clips text to fit a single line and appends an ellipsis.
   ```
 
 ### `line-clamp($lines)`
+
 Clips text to fit a specified number of lines, appending an ellipsis on the last line.
-* **Usage:**
+
+- **Usage:**
   ```scss
   .card-description {
     @include line-clamp(3); // Clamps paragraph at 3 lines
@@ -161,14 +202,15 @@ Clips text to fit a specified number of lines, appending an ellipsis on the last
 ## 6. CSS Custom Properties Registrars
 
 ### `generate-color-css-variables()`
+
 Iterates through all color palettes, theme tokens, spacers, and breakpoint maps to register them as native CSS variables on `:root`.
 
-* **Usage:**
+- **Usage:**
   Simply register the mixin in the root file:
   ```scss
   @include generate-color-css-variables();
   ```
-* **Variables generated on `:root`:**
+- **Variables generated on `:root`:**
   - `--color-primary`: oklch(85% 0.199 91.936)
   - `--color-primary-content`: oklch(42% 0.095 57.708)
   - `--color-base-100`: oklch(100% 0 0)
