@@ -1,0 +1,13 @@
+/*
+ * Responsive Breakpoint Mixins
+ * Provides mixins for responsive design
+ */
+
+@use 'sass:map';
+
+// Media for reduced motion
+@mixin media-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}

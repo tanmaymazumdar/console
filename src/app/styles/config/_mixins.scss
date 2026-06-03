@@ -1,0 +1,290 @@
+@use 'sass:map';
+@use 'sass:math';
+
+@use 'variables';
+@use '../core/colors';
+@use 'functions';
+
+// Function to calculate min-width from breakpoint name
+@function breakpoint-min($name, $breakpoints: $breakpoints) {
+  $min: map.get($breakpoints, $name);
+  @if $min != 0 {
+    @return $min;
+  } @else {
+    @return null;
+  }
+}
+
+// Media query mixins
+@mixin media-breakpoint-up($name, $breakpoints: $breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+// Media query mixins
+@mixin media-breakpoint-up($name, $breakpoints: $breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($name, $breakpoints: $breakpoints) {
+  $max: breakpoint-min($name, $breakpoints);
+  @if $max {
+    @media (max-width: ($max - 0.02px)) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: $breakpoints) {
+  $min: breakpoint-min($lower, $breakpoints);
+  $max: breakpoint-min($upper, $breakpoints);
+
+  @if $min != null and $max != null {
+    @media (min-width: $min) and (max-width: ($max - 0.02px)) {
+      @content;
+    }
+  } @else if $max == null {
+    @include media-breakpoint-up($lower, $breakpoints) {
+      @content;
+    }
+  } @else if $min == null {
+    @include media-breakpoint-down($upper, $breakpoints) {
+      @content;
+    }
+  }
+}
+
+// Vendor prefix mixins
+@mixin prefix($property, $value, $prefixes: ()) {
+  @each $prefix in $prefixes {
+    #{'-' + $prefix + '-' + $property}: $value;
+  }
+  #{$property}: $value;
+}
+
+// Utility generator mixin
+@mixin generate-utility($property, $class, $values) {
+  @each $name, $value in $values {
+    .#{$class}-#{$name} {
+      #{$property}: $value !important;
+    }
+  }
+}
+
+// Responsive utility generator
+@mixin generate-responsive-utility($property, $class, $values, $breakpoints: $breakpoints) {
+  @each $breakpoint-name in map.keys($breakpoints) {
+    @include media-breakpoint-up($breakpoint-name) {
+      $infix: functions.breakpoint-infix($breakpoint-name, $breakpoints);
+
+      @each $name, $value in $values {
+        .#{$class}#{$infix}-#{$name} {
+          #{$property}: $value !important;
+        }
+      }
+    }
+  }
+}
+
+// Clearfix mixin
+@mixin clearfix() {
+  &::after {
+    display: block;
+    content: '';
+    clear: both;
+  }
+}
+
+// Screen reader only mixin
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Animation mixin
+@mixin transition($properties...) {
+  transition-property: $properties;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-property: none;
+  }
+}
+
+// Focus state mixin
+@mixin focus-outline {
+  outline: 2px solid colors.$color-primary;
+  outline-offset: 2px;
+}
+
+// Aspect ratio mixin
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+
+  &::before {
+    display: block;
+    content: '';
+    width: 100%;
+    padding-top: functions.aspect-ratio($width, $height);
+  }
+
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+// Truncate text with ellipsis
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Multi-line ellipsis
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Mixin to generate spacing CSS variables
+@mixin generate-spacing-css-variables() {
+  @each $key, $value in variables.$spacers {
+    --space-#{$key}: #{$value} rem; /* #{$value * 16} px */
+  }
+}
+
+// Mixin to generate CSS variables for theme colors
+@mixin generate-theme-css-variables($name, $color, $content-color: null) {
+  --color-#{$name}: #{$color};
+
+  @if $content-color {
+    --color-#{$name}-content: #{$content-color};
+  }
+}
+
+// Mixin to generate breakpoint CSS variables
+@mixin generate-breakpoint-css-variables() {
+  @each $name, $value in variables.$breakpoints {
+    --breakpoint-#{$name}: #{$value} rem; /* #{$value * 16} px */
+  }
+}
+
+// Generate CSS custom properties in :root
+@mixin generate-color-css-variables() {
+  :root {
+    // Base theme colors
+    @include generate-theme-css-variables('base-100', colors.$color-base-100);
+    @include generate-theme-css-variables('base-200', colors.$color-base-200);
+    @include generate-theme-css-variables('base-300', colors.$color-base-300);
+    @include generate-theme-css-variables('base-content', colors.$color-base-content);
+
+    @include generate-theme-css-variables('primary', colors.$color-primary, colors.$color-primary-content);
+    @include generate-theme-css-variables('secondary', colors.$color-secondary, colors.$color-secondary-content);
+    @include generate-theme-css-variables('accent', colors.$color-accent, colors.$color-accent-content);
+    @include generate-theme-css-variables('neutral', colors.$color-neutral, colors.$color-neutral-content);
+    @include generate-theme-css-variables('info', colors.$color-info, colors.$color-info-content);
+    @include generate-theme-css-variables('success', colors.$color-success, colors.$color-success-content);
+    @include generate-theme-css-variables('warning', colors.$color-warning, colors.$color-warning-content);
+    @include generate-theme-css-variables('error', colors.$color-error, colors.$color-error-content);
+
+    --color-black: #{colors.$color-black};
+    --color-white: #{colors.$color-white};
+
+    --radius-selector: #{colors.$radius-selector};
+    --radius-field: #{colors.$radius-field};
+    --radius-box: #{colors.$radius-box};
+    --size-selector: #{colors.$size-selector};
+    --size-field: #{colors.$size-field};
+    --border: #{colors.$border};
+    --depth: #{colors.$depth};
+    --noise: #{colors.$noise};
+
+    @include generate-breakpoint-css-variables();
+    @include generate-spacing-css-variables();
+
+    @each $color-name, $shades in colors.$colors {
+      @each $shade, $value in $shades {
+        --color-#{$color-name}-#{$shade}: #{$value};
+      }
+    }
+  }
+}
+
+@mixin padding4($top, $left, $bottom, $right) {
+  padding: #{math.div($top, 16)}rem #{math.div($left, 16)}rem #{math.div($bottom, 16)}rem #{math.div($right, 16)}rem;
+}
+
+@mixin padding($value) {
+  padding: #{math.div($value, 16)}rem;
+}
+
+@mixin paddingY($value) {
+  padding-top: #{math.div($value, 16)}rem;
+  padding-bottom: #{math.div($value, 16)}rem;
+}
+
+@mixin paddingX($value) {
+  padding-left: #{math.div($value, 16)}rem;
+  padding-right: #{math.div($value, 16)}rem;
+}
+
+@mixin paddingYX($yvalue, $xvalue) {
+  padding-top: #{math.div($yvalue, 16)}rem;
+  padding-bottom: #{math.div($yvalue, 16)}rem;
+  padding-left: #{math.div($xvalue, 16)}rem;
+  padding-right: #{math.div($xvalue, 16)}rem;
+}
+
+@mixin margin4($top, $left, $bottom, $right) {
+  margin: #{math.div($top, 16)}rem #{math.div($left, 16)}rem #{math.div($bottom, 16)}rem #{math.div($right, 16)}rem;
+}
+
+@mixin margin($value) {
+  margin: #{math.div($value, 16)}rem;
+}
+
+@mixin marginY($value) {
+  margin-top: #{math.div($value, 16)}rem;
+  margin-bottom: #{math.div($value, 16)}rem;
+}
+
+@mixin marginX($value) {
+  margin-left: #{math.div($value, 16)}rem;
+  margin-right: #{math.div($value, 16)}rem;
+}
+
+@mixin marginYX($yvalue, $xvalue) {
+  margin-top: #{math.div($yvalue, 16)}rem;
+  margin-bottom: #{math.div($yvalue, 16)}rem;
+  margin-left: #{math.div($xvalue, 16)}rem;
+  margin-right: #{math.div($xvalue, 16)}rem;
+}

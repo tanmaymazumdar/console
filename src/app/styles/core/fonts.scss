@@ -1,0 +1,15 @@
+@import '../config/variables';
+
+.inter {
+  font-family: $font-family-inter;
+  font-optical-sizing: auto;
+  font-style: normal;
+
+  .font-normal {
+    font-weight: $font-weight-normal;
+  }
+
+  .font-semibold {
+    font-weight: $font-weight-semibold;
+  }
+}

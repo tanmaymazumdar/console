@@ -1,0 +1,273 @@
+/*
+ * Modern CSS reset with accessibility considerations
+ * Combines normalize.css concepts with modern reset approaches
+ */
+
+@use 'sass:map';
+
+@use 'colors';
+@use '../config/variables';
+@use '../config/mixins';
+@use '../config/functions';
+
+// Box sizing for all elements
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// Document setup
+html {
+  font-size: 100%; // Keep default font size at user's preferred setting
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: colors.$color-white;
+  scroll-behavior: smooth;
+
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+}
+
+// Body defaults
+body {
+  margin: 0;
+  font-family: variables.$font-family-base;
+  font-size: variables.$font-size-base;
+  font-weight: variables.$font-weight-normal;
+  line-height: variables.$line-height-base;
+  color: colors.$color-base-content;
+  background-color: colors.$color-base-100;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// Content sectioning
+main {
+  display: block; // Render consistently in IE
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: variables.$spacer;
+  font-weight: variables.$font-weight-semibold;
+  line-height: variables.$line-height-sm;
+}
+
+// Text content
+p,
+ol,
+ul,
+dl,
+table,
+blockquote,
+pre,
+address,
+figure {
+  margin-top: 0;
+  margin-bottom: variables.$spacer;
+}
+
+// Lists
+ol,
+ul {
+  padding-left: 2rem;
+}
+
+// Reset nested lists
+ol ol,
+ul ul,
+ol ul,
+ul ol {
+  margin-bottom: 0;
+}
+
+// Inline text semantics
+a {
+  color: colors.$color-primary;
+  text-decoration: none;
+  background-color: transparent;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    @include mixins.focus-outline;
+  }
+
+  &:not([class]) {
+    text-decoration-skip-ink: auto;
+  }
+}
+
+small {
+  font-size: 80%;
+}
+
+// Emphasized text
+b,
+strong {
+  font-weight: variables.$font-weight-bold;
+}
+
+// Code and preformatted text
+code,
+pre,
+kbd,
+samp {
+  font-family: variables.$font-family-mono;
+  font-size: 1em;
+}
+
+pre {
+  overflow: auto;
+}
+
+// Embedded content
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+img {
+  border-style: none;
+  vertical-align: middle;
+}
+
+// Form elements
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+// Button defaults
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+
+// Remove inner border and padding in Firefox
+button::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+// Restore focus styles unset by previous rule
+button:-moz-focusring,
+[type='button']:-moz-focusring,
+[type='reset']:-moz-focusring,
+[type='submit']:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+// Form element defaults
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+  margin: 0;
+  border: 1px solid functions.color('gray', '300');
+}
+
+legend {
+  box-sizing: border-box;
+  color: inherit;
+  display: table;
+  max-width: 100%;
+  padding: 0;
+  white-space: normal;
+}
+
+progress {
+  vertical-align: baseline;
+}
+
+textarea {
+  overflow: auto;
+  resize: vertical;
+}
+
+// Checkbox and radio styles
+[type='checkbox'],
+[type='radio'] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+// Number input styles
+[type='number']::-webkit-inner-spin-button,
+[type='number']::-webkit-outer-spin-button {
+  height: auto;
+}
+
+// Search input styles
+[type='search'] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+
+[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+// File upload button styles
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+// Tables
+table {
+  border-collapse: collapse;
+}
+
+// Hidden attribute
+[hidden] {
+  display: none !important;
+}
+
+// Remove all animations and transitions for people that prefer not to see them
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
