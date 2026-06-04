@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import fastifyCompress from '@fastify/compress'
@@ -11,6 +12,7 @@ import Fastify from 'fastify'
 import type { FastifyRequest, FastifyReply } from 'fastify'
 
 import { config } from './server/config.js'
+import v1Routes from './server/controllers/v1/index.js'
 import { logger } from './server/hooks/logger.js'
 import cachingPlugin from './server/plugins/caching.js'
 import { corsConfig } from './server/plugins/cors.js'
@@ -52,17 +54,41 @@ if (isProd) {
     preCompressed: true,
     serveDotFiles: false
   })
-
-  // Explicitly reduce caching of assets that don't use cache bursting techniques
-  fastify.get('/', async (_req: FastifyRequest, res: FastifyReply) => {
-    // index.html should never be cached
-    return res.sendFile('index.html', { maxAge: 0, immutable: false })
-  })
 }
 
-// 7. Simple root check route
+// 8. Register Routes
+await fastify.register(v1Routes, { prefix: '/api/v1' })
+
+// 9. Simple root check route
 fastify.get('/api/v1/health', async (_req: FastifyRequest, res: FastifyReply) => {
   return res.code(200).send({ status: 'ok', service: 'SaaS API' })
+})
+
+// Catch-all handler for Single Page Application (SPA) fallback serving
+fastify.setNotFoundHandler(async (request, reply) => {
+  // Never serve HTML fallback for API endpoints
+  if (request.url.startsWith('/api/')) {
+    return reply.code(404).send({
+      error: 'Not Found',
+      message: `Route ${request.method}:${request.url} not found`
+    })
+  }
+
+  if (isProd) {
+    // In production, serve the index.html via @fastify/static
+    return reply.sendFile('index.html', { maxAge: 0, immutable: false })
+  } else {
+    // In development, read and serve the src/index.html directly
+    try {
+      const html = await readFile(join(import.meta.dirname, 'index.html'), 'utf8')
+      return reply.type('text/html').send(html)
+    } catch {
+      return reply.code(404).send({
+        error: 'Not Found',
+        message: 'index.html not found in development'
+      })
+    }
+  }
 })
 
 try {
