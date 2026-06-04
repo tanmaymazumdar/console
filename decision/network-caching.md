@@ -9,6 +9,7 @@ This document describes the design, implementation, cache key generation, and us
 The client-side fetch wrapper is built to prevent redundant API network requests, optimizing user experience and minimizing server-side database lookup load:
 
 ### A. In-Memory Request Caching
+
 - **Goal:** Cache network responses dynamically using an in-memory storage driver, returning cached payloads instantly without initiating raw network requests.
 - **Cache Key Matching Criteria:** Cache keys must uniquely identify a request based on:
   1. The target request URL (which natively contains query parameters).
@@ -16,12 +17,15 @@ The client-side fetch wrapper is built to prevent redundant API network requests
   3. The request body (if present, serialized consistently for JSON, URL search params, and form data payloads).
 
 ### B. Configurable Cache Expiry (TTL)
+
 - **Goal:** Allow callers to specify custom cache durations, defaulting to a **1-hour (3,600,000 ms)** fallback cache freshness TTL.
 
 ### C. Configurable Method Filtering
+
 - **Goal:** Control which HTTP verbs are permitted for caching, defaulting to **`GET`** and **`POST`** requests.
 
 ### D. Specific & Dynamic Cache Invalidation
+
 - **Goal:** Expose invalidation functions to manually bust cache entries. If `'all'` is passed, the entire cache store is cleared. Otherwise, a target URL string acts as a filter to invalidate specific endpoints.
 
 ---
@@ -49,7 +53,7 @@ Below is the request/response lifecycle flowchart showing how `cachedFetch` reso
 ```mermaid
 graph TD
     A[Call cachedFetch url, options] --> B{Is method in cacheMethods?}
-    
+
     B -- No --> C[Execute Native fetch & Return]
     B -- Yes --> D[Generate Cache Key from Method + URL + Body]
 
@@ -72,6 +76,7 @@ graph TD
 ## 4. Implementation Layout
 
 The cache utility is contained within the following file:
+
 - **[src/app/network.ts](file:///Users/tanmay/Documents/poc/saas/src/app/network.ts):** Exposes `cachedFetch`, `clearCache`, and options configurations.
 
 ---
@@ -79,7 +84,9 @@ The cache utility is contained within the following file:
 ## 5. Usage & Configuration Guide
 
 ### A. Default GET Request Caching (1-Hour TTL)
+
 Caches automatically using default configurations:
+
 ```typescript
 import { cachedFetch } from './network'
 
@@ -93,19 +100,23 @@ const data2 = await res2.json()
 ```
 
 ### B. Custom Cache Configurations
+
 Modify caching thresholds, whitelist verbs, or force network lookups:
+
 ```typescript
 const response = await cachedFetch('https://api.example.com/search', {
   method: 'POST',
   body: JSON.stringify({ query: 'saas' }),
-  cacheTtl: 60000,           // Expire in 60 seconds (1 minute)
-  cacheMethods: ['POST'],    // Cache POST requests only
-  bypassCache: true          // Forces network update (updates cache with fresh data)
+  cacheTtl: 60000, // Expire in 60 seconds (1 minute)
+  cacheMethods: ['POST'], // Cache POST requests only
+  bypassCache: true // Forces network update (updates cache with fresh data)
 })
 ```
 
 ### C. Cache Invalidation (Manual Clearing)
+
 Clear the cache using `clearCache()`:
+
 ```typescript
 import { clearCache } from './network'
 
