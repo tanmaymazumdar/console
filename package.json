@@ -64,12 +64,5 @@
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.14",
     "vite-plugin-compression2": "^2.5.3"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.4.0",
-      "onFail": "download"
-    }
   }
 }
