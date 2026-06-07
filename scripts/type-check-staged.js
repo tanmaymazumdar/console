@@ -44,7 +44,8 @@ try {
   const tempConfigPath = path.resolve('tsconfig.temp.json')
   const tempConfig = {
     extends: './tsconfig.app.json',
-    files: [...stagedFiles, ...dtsFiles]
+    files: [...stagedFiles, ...dtsFiles],
+    include: []
   }
 
   fs.writeFileSync(tempConfigPath, JSON.stringify(tempConfig, null, 2))

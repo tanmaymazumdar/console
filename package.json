@@ -9,7 +9,7 @@
     "clean": "rm -rf dist",
     "dev": "concurrently \"pnpm run dev:server\" \"pnpm run dev:client\"",
     "dev:client": "NODE_ENV=development vite",
-    "dev:server": "NODE_ENV=development tsx --watch src/index.ts",
+    "dev:server": "NODE_ENV=development tsx --env-file=.env --watch src/index.ts",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",

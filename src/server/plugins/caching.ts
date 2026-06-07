@@ -36,7 +36,8 @@ export default fp(async function cachingPlugin(fastify: FastifyInstance) {
         port: REDIS_PORT,
         lazyConnect: true,
         maxRetriesPerRequest: 1,
-        connectTimeout: 2000
+        connectTimeout: 2000,
+        password: process.env.REDIS_PASSWORD
       })
 
       redis.on('error', (err: Error) => {
